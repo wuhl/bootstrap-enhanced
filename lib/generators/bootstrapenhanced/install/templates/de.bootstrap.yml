@@ -1,0 +1,16 @@
+# de.bootstrap.yml
+de:
+  helpers:
+    actions: "Aktionen"
+    links:
+      back: "Zurück"
+      cancel: "Abbrechen"
+      confirm: "Sind Sie sicher?"
+      destroy: "Löschen"
+      new: "Neu"
+      edit: "Bearbeiten"
+    titles:
+      edit: "%{model} bearbeiten"
+      save: "%{model} speichern"
+      new: "%{model} anlegen"
+      delete: "%{model} löschen"
