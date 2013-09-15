@@ -7,6 +7,8 @@ module Bootstrapenhanced
       source_root File.expand_path("../templates", __FILE__)
       desc "This generator installs Bootstrap Enhanced"
       argument :language_type, :type => :string, :default => 'de', :banner => '*de or other language'
+      class_option :about_file, :type => :string
+      class_option :contact_file, :type => :string
 
       def run_other_generators
         generate "bootstrap:install"
@@ -21,7 +23,25 @@ module Bootstrapenhanced
         insert_into_file "app/views/layouts/application.html.erb", :after => "<%= yield %>\n" do
           "  </div>\n"
         end
+      end
+
+      def insert_menu_bar_and_default_pages
         copy_file "_menu.html.erb", "app/views/layouts/_menu.html.erb"
+        empty_directory "app/views/pages"
+        
+        about_file = "pages/about.html.erb"
+        if options[:about_file]
+          about_file = options[:about_file]
+        end
+        copy_file about_file, "app/views/pages/about.html.erb"
+        
+        contact_file = "pages/contact.html.erb"
+        if options[:contact_file]
+          contact_file = options[:contact_file]
+        end
+        copy_file contact_file, "app/views/pages/contact.html.erb"
+        
+        copy_file "high_voltage.rb", "config/initializers/high_voltage.rb"
       end
 
       def adjust_menu_place
