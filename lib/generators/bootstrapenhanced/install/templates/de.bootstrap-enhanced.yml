@@ -1,6 +1,5 @@
 # de.bootstrap.yml
 de:
   menu:
-    home: "Start"
     about: "Über uns"
     contact: "Kontakt"

@@ -60,6 +60,10 @@ module Bootstrapenhanced
         copy_file "de.bootstrap-enhanced.yml", "config/locales/#{language_type}/#{language_type}.bootstrap-enhanced.yml"
       end
 
+      def change_table_class
+        gsub_file "lib/templates/erb/scaffold/index.html.erb", "<table class=\"datatable display\">", "<table class=\"datatable display table table-striped table-bordered\">"
+      end
+
     end
   end
 end
