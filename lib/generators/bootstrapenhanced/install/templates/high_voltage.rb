@@ -3,18 +3,18 @@
 # Top level routes
 #
 # You can remove the directory pages from the URL path and serve up routes from the root of the domain path:
-# 
+#
 # http://www.example.com/about
 # http://www.example.com/company
 # Would look for corresponding files:
-# 
+#
 # app/views/pages/about.html.erb
 # app/views/pages/company.html.erb
 # This is accomplished by changing the HighVoltage.route_drawer to HighVoltage::RouteDrawers::Root
 HighVoltage.route_drawer = HighVoltage::RouteDrawers::Root
 
 # Disabling routes
-# 
+#
 # The default routes can be completely removed by changing the HighVoltage.routes to false:
 # HighVoltage.routes = false
 

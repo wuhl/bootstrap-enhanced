@@ -10,18 +10,21 @@ module Bootstrapenhanced
       class_option :about_file, :type => :string
       class_option :contact_file, :type => :string
 
-      def run_other_generators
-        generate "bootstrap:install"
-      end
+      # def run_other_generators
+      #   generate "bootstrap:install"
+      # end
 
-      def adjust_application_html_file  
-        insert_into_file "app/views/layouts/application.html.erb", :after => "<body>\n\n" do
-          "  <%= render 'layouts/menu' %>\n" +
-          "  <div class=\"container\">\n" +
-          "    "
+      def adjust_application_html_file
+        insert_into_file "app/views/layouts/application.html.erb", :before => "<%= yield %>\n" do
+          "    <%= render 'layouts/menu' %>\n" +
+          "    <div class=\"container\">\n" +
+          "      <% flash.each do |name, msg| %>\n" +
+          "        <%= content_tag(:div, msg, class: \"alert alert-info\") %>\n" +
+          "      <% end %>\n" +
+          "  "
         end
         insert_into_file "app/views/layouts/application.html.erb", :after => "<%= yield %>\n" do
-          "  </div>\n"
+          "    </div>\n"
         end
       end
 
@@ -38,7 +41,7 @@ module Bootstrapenhanced
             about_file = options[:about_file]
           end
           copy_file about_file, "app/views/pages/about.html.erb"
-          
+
           contact_file = "pages/contact.html.erb"
           if options[:contact_file]
             contact_file = options[:contact_file]
@@ -48,11 +51,29 @@ module Bootstrapenhanced
         copy_file "high_voltage.rb", "config/initializers/high_voltage.rb"
       end
 
-      def adjust_menu_place
-        insert_into_file "app/assets/stylesheets/bootstrap_and_overrides.css.less", :after => "@import \"twitter/bootstrap/bootstrap\";\n" do
-          "\n" +
-          "body { padding-top: 60px; }\n" +
-          "\n"
+      def switch_to_sass
+        if FileTest.file? "app/assets/stylesheets/application.css"
+          FileUtils.move "app/assets/stylesheets/application.css", "app/assets/stylesheets/application.scss"
+        end
+      end
+
+      def adjust_application_scss
+        gsub_file "app/assets/stylesheets/application.scss",
+          " *= require_tree .\n *= require_self\n */\n",
+          " */\n\n@import \"bootstrap\";\n"
+      end
+
+      def adjust_application_js
+        insert_into_file "app/assets/javascripts/application.js", :after => "//= require jquery\n" do
+          "//= require bootstrap\n"
+        end
+      end
+
+      def add_menu_creation_on_model
+        if FileTest.file? "lib/templates/erb/scaffold/_form.html.erb"
+          insert_into_file "lib/templates/erb/scaffold/_form.html.erb",
+            "# Menu\n",
+            :before => "  create_file \"config/locales/de/de.model."
         end
       end
 
@@ -64,9 +85,9 @@ module Bootstrapenhanced
         copy_file "de.bootstrap-enhanced.yml", "config/locales/#{language_type}/#{language_type}.bootstrap-enhanced.yml"
       end
 
-      def change_table_class
-        gsub_file "lib/templates/erb/scaffold/index.html.erb", "<table class=\"datatable display\">", "<table class=\"datatable display table table-striped table-bordered\">"
-      end
+      # def change_table_class
+      #   gsub_file "lib/templates/erb/scaffold/index.html.erb", "<table class=\"datatable display\">", "<table class=\"datatable display table table-striped table-bordered\">"
+      # end
 
       def add_default_images
         if Dir.exist? "doc/images"
@@ -75,7 +96,7 @@ module Bootstrapenhanced
           puts "      Images installed"
         end
       end
-      
+
       def add_default_stylesheets
         if Dir.exist? "doc/stylesheets"
           files = Dir.glob("doc/stylesheets/*") - ['backup']
@@ -102,7 +123,7 @@ module Bootstrapenhanced
           puts "      Layouts installed"
         end
       end
-      
+
       def add_default_shared
         if Dir.exist? "doc/shared"
           empty_directory "app/views/shared"
@@ -111,7 +132,7 @@ module Bootstrapenhanced
           puts "      Shared installed"
         end
       end
- 
+
       def add_default_locales
         if Dir.exist? "doc/locales"
           files = Dir.glob("doc/locales/*")
@@ -119,7 +140,7 @@ module Bootstrapenhanced
           puts "      Locales installed"
         end
       end
-     
+
     end
   end
 end
