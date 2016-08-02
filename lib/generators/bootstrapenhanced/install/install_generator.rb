@@ -71,59 +71,29 @@ module Bootstrapenhanced
 
       def adjust_forms_file
         if FileTest.file? "lib/templates/erb/scaffold/_form.html.erb"
+          # Block 1
           gsub_file "lib/templates/erb/scaffold/_form.html.erb",
-            "    <div class=\"field\">\n" +
-            "      <%- if attribute.password_digest? -%>\n" +
-            "      <%%= f.label :password %>\n" +
-            "      <%%= f.password_field :password %>\n" +
-            "    </div>\n" +
-            "    <div>\n" +
-            "      <%%= f.label :password_confirmation %>\n" +
-            "      <%%= f.password_field :password_confirmation %>\n" +
-            "      <%- elsif attribute.reference? -%>\n" +
-            "      <%%= f.label :<%= attribute.column_name %> %>\n" +
-            "      <%%= f.<%= attribute.field_type %> :<%= attribute.column_name %> %>\n" +
-            "      <%- else -%>\n" +
-            "      <%%= f.label :<%= attribute.name %> %>\n" +
-            "      <%%= f.<%= attribute.field_type %> :<%= attribute.name %> %>\n" +
-            "      <%- end -%>\n" +
-            "    </div>\n",
-            "    <%- if attribute.password_digest? -%>\n" +
-            "    <%%= f.label :password %>\n" +
-            "    <%%= f.password_field :password %>\n" +
-            "    <%%= f.label :password_confirmation %>\n" +
-            "    <%%= f.password_field :password_confirmation %>\n" +
-            "    <%- elsif attribute.reference? -%>\n" +
-            "    <%%= f.label :<%= attribute.column_name %> %>\n" +
-            "    <%%= f.<%= attribute.field_type %> :<%= attribute.column_name %> %>\n" +
-            "    <%- else -%>\n" +
-            "    <%%= f.label :<%= attribute.name %> %>\n" +
-            "    <%%= f.<%= attribute.field_type %> :<%= attribute.name %> %>\n" +
-            "    <%- end -%>\n"
-
-          insert_into_file "lib/templates/erb/scaffold/_form.html.erb",
+            "    <%%= f.label :<%= attribute.singular_name %> %>\n" +
+            "    <%%= f.collection_select :<%= attribute.column_name %>, <%= attribute.singular_name.camelize %>.all, :id, :foreignkey_value, prompt: true %>\n",
             "    <div class=\"form-group row\">\n" +
-            "  ",
-            :before => "    <%%= f.label :<%= attribute.name %> %>\n"
-
-          insert_into_file "lib/templates/erb/scaffold/_form.html.erb",
-            ", class: \"col-sm-2 form-control-label\"",
-            :after => "    <%%= f.label :<%= attribute.name %>"
-
-          insert_into_file "lib/templates/erb/scaffold/_form.html.erb",
+            "      <%%= f.label :<%= attribute.singular_name %>, class: \"col-sm-2 form-control-label\" %>\n" +
             "      <div class=\"col-sm-10\">\n" +
-            "    ",
-            :before => "    <%%= f.<%= attribute.field_type %> :<%= attribute.name %> %>\n"
-
-          insert_into_file "lib/templates/erb/scaffold/_form.html.erb",
-            ", class: \"form-control\"",
-            :after => "    <%%= f.<%= attribute.field_type %> :<%= attribute.name %>"
-
-          insert_into_file "lib/templates/erb/scaffold/_form.html.erb",
+            "        <%%= f.collection_select :<%= attribute.column_name %>, <%= attribute.singular_name.camelize %>.all, :id, :foreignkey_value, prompt: true %>\n" +
             "      </div>\n" +
-            "    </div>\n",
-            :after => "    <%%= f.<%= attribute.field_type %> :<%= attribute.name %>, class: \"form-control\" %>\n"
+            "    </div>\n"
 
+          # Block 2
+          gsub_file "lib/templates/erb/scaffold/_form.html.erb",
+            "    <%%= f.label :<%= attribute.name %> %>\n" +
+            "    <%%= f.<%= attribute.field_type %> :<%= attribute.name %> %>\n",
+            "    <div class=\"form-group row\">\n" +
+            "      <%%= f.label :<%= attribute.name %>, class: \"col-sm-2 form-control-label\" %>\n" +
+            "      <div class=\"col-sm-10\">\n" +
+            "        <%%= f.<%= attribute.field_type %> :<%= attribute.name %>, class: \"form-control\" %>\n" +
+            "      </div>\n" +
+            "    </div>\n"
+
+          # Block 3
           insert_into_file  "lib/templates/erb/scaffold/_form.html.erb",
             " :class => \"btn btn-success btn-mini\"",
             :after => "    <%%= f.submit"
