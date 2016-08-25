@@ -48,7 +48,6 @@ module Bootstrapenhanced
           end
           copy_file contact_file, "app/views/pages/contact.html.erb"
         end
-        copy_file "high_voltage.rb", "config/initializers/high_voltage.rb"
       end
 
       def switch_to_sass
@@ -94,6 +93,17 @@ module Bootstrapenhanced
             "    </div>\n"
 
           # Block 3
+          gsub_file "lib/templates/erb/scaffold/_form.html.erb",
+            "    <%%= f.label :<%= attribute.name %> %>\n"+
+            "    <%%= f.number_field :<%= attribute.name %>, step: <%= 1.to_f / 10 ** attribute.attr_options[:scale] %> %>\n",
+            "    <div class=\"form-group row\">\n" +
+            "      <%%= f.label :<%= attribute.name %>, class: \"col-sm-2 form-control-label\" %>\n" +
+            "      <div class=\"col-sm-10\">\n" +
+            "        <%%= f.number_field :<%= attribute.name %>, step: <%= 1.to_f / 10 ** attribute.attr_options[:scale] %> %>\n" +
+            "      </div>\n" +
+            "    </div>\n"
+
+          # Block 4
           insert_into_file  "lib/templates/erb/scaffold/_form.html.erb",
             " :class => \"btn btn-success btn-mini\"",
             :after => "    <%%= f.submit"
