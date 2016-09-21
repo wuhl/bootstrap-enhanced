@@ -107,6 +107,60 @@ module Bootstrapenhanced
           insert_into_file  "lib/templates/erb/scaffold/_form.html.erb",
             " :class => \"btn btn-success btn-mini\"",
             :after => "    <%%= f.submit"
+
+          # Block 5
+          gsub_file "lib/templates/erb/scaffold/_form.html.erb",
+"            \"  <%= f.label :\#{a.name} %\\>\\n\" +\n" +
+"            \"  <%= f.\#{a.field_type} :\#{a.name} %\\>\\n\"",
+"            \"  <div class=\\\"form-group row\\\">\\n\" +\n" +
+"            \"    <%= f.label :\#{a.name}, class: \\\"col-sm-2 form-control-label\\\" %\\>\\n\" +\n" +
+"            \"    <div class=\\\"col-sm-10\\\">\\n\" +\n" +
+"            \"      <%= f.\#{a.field_type} :\#{a.name}, class: \\\"form-control\\\",  placeholder: \#{table_name.classify}.human_attribute_name(:\#{a.name}) %\\>\\n\" +\n" +
+"            \"    </div>\\n\" +\n" +
+"            \"  </div>\\n\""
+
+          # Block 6
+          gsub_file "lib/templates/erb/scaffold/_form.html.erb",
+"            \"  <%= f.label :\#{a.name} %\\>\\n\" +\n" +
+"            \"  <%= f.number_field :\#{a.name}, step: \#{1.to_f / 10 ** a.attr_options[:scale]} %\\>\\n\"",
+"            \"  <div class=\\\"form-group row\\\">\\n\" +\n" +
+"            \"    <%= f.label :\#{a.name}, class: \\\"col-sm-2 form-control-label\\\" %\\>\\n\" +\n" +
+"            \"    <div class=\\\"col-sm-10\\\">\\n\" +\n" +
+"            \"      <%= f.number_field :\#{a.name}, step: \#{1.to_f / 10 ** a.attr_options[:scale]}, class: \\\"form-control\\\" %\\>\\n\" +\n" +
+"            \"    </div>\\n\" +\n" +
+"            \"  </div>\\n\""
+
+          # Block 7
+          gsub_file "lib/templates/erb/scaffold/_form.html.erb",
+"            \"  <%= f.label :\#{a.name} %\\>\\n\" \n" +
+"            \"  <%= f.\#{a.field_type} :\#{a.name} %\\>\\n\"",
+"            \"  <div class=\\\"form-group row\\\">\\n\" +\n"
+        end
+      end
+
+      def adjust_template_new
+        if FileTest.file? "lib/templates/erb/scaffold/new.html.erb"
+          gsub_file "lib/templates/erb/scaffold/new.html.erb",
+            "<%%= link_to t('helpers.links.back'), <%= index_helper %>_path %>",
+            "<%%= link_to t('helpers.links.back'), <%= index_helper %>_path, :class => \"btn btn-success btn-mini\" %>"
+        end
+      end
+
+      def adjust_template_edit
+        if FileTest.file? "lib/templates/erb/scaffold/edit.html.erb"
+          gsub_file "lib/templates/erb/scaffold/edit.html.erb",
+            "<%= link_to t('helpers.links.show'), @project %> |\n" +
+            "<%= link_to t('helpers.links.back'), projects_path %>",
+            "<%= link_to t('helpers.links.show'), @project, :class => \"btn btn-success btn-mini\" %> |\n" +
+            "<%= link_to t('helpers.links.back'), projects_path, :class => \"btn btn-success btn-mini\" %>"
+        end
+      end
+
+      def adjust_template_index
+        if FileTest.file? "lib/templates/erb/scaffold/index.html.erb"
+          gsub_file "lib/templates/erb/scaffold/index.html.erb",
+            "<p><%= link_to t('helpers.titles.new', model: Project.model_name.human ), new_project_path %></p>",
+            "<p><%= link_to t('helpers.titles.new', model: Project.model_name.human ), new_project_path, :class => \"btn btn-success btn-mini\" %></p>"
         end
       end
 
